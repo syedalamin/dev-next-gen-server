@@ -30,6 +30,7 @@ async function run() {
     //! collection 
     const bannerCollection = client.db("DevNextGen").collection("welcomeBanner");
     const joinCompanyCollection = client.db("DevNextGen").collection("joinCompany");
+    const teamVideoCollection = client.db("DevNextGen").collection("teamVideo");
 
     //! welcome banner
     app.get('/banner', async(req, res)=>{
@@ -73,7 +74,29 @@ async function run() {
       const query = {_id: new ObjectId(id)};
       const result = await joinCompanyCollection.deleteOne(query);
       res.send(result)
-    })
+    });
+
+    //! team video
+    app.get('/teamvideo', async(req, res)=>{
+      const result = await teamVideoCollection.find().toArray();
+      res.send(result)
+    });
+
+    app.put('/teamvideo/:id', async(req, res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const options = {upsert: true};
+      const updateTeamVideo = req.body;
+      const teamVideo = {
+        $set: {
+          video: updateTeamVideo.video,
+          image: updateTeamVideo.image,
+        }
+      }
+      const result = await teamVideoCollection.updateOne(filter, teamVideo, options);
+      res.send(result);
+    });
+
 
     
 
