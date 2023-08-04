@@ -29,12 +29,13 @@ async function run() {
 
     //! collection 
     const bannerCollection = client.db("DevNextGen").collection("welcomeBanner");
+    const joinCompanyCollection = client.db("DevNextGen").collection("joinCompany");
 
     //! welcome banner
     app.get('/banner', async(req, res)=>{
       const result = await bannerCollection.find().toArray();
       res.send(result)
-    })
+    });
 
     app.put('/banner/:id', async(req, res)=>{
       const id = req.params.id;
@@ -51,9 +52,28 @@ async function run() {
       }
       const result = await bannerCollection.updateOne(filter, banners, options);
       res.send(result);
+    });
+
+
+    //! join 10 company
+    app.get('/company', async(req, res)=>{
+      const result = await joinCompanyCollection.find().toArray();
+      res.send(result)
+    });
+
+    app.post('/company', async(req, res)=>{
+      const company = req.body;
+      const result = await joinCompanyCollection.insertOne(company);
+      res.send(result)
+
+    });
+
+    app.delete('/company/:id', async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await joinCompanyCollection.deleteOne(query);
+      res.send(result)
     })
-
-
 
     
 
