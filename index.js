@@ -10,7 +10,7 @@ app.use(express.json());
 
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.pts32jw.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -35,6 +35,26 @@ async function run() {
       const result = await bannerCollection.find().toArray();
       res.send(result)
     })
+
+    app.put('/banner/:id', async(req, res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const options = {upsert: true};
+      const updateBanner = req.body;
+      const banners = {
+        $set: {
+          heading: updateBanner.heading,
+          image: updateBanner.image,
+          title: updateBanner.title,
+          subtitle: updateBanner.subtitle
+        }
+      }
+      const result = await bannerCollection.updateOne(filter, banners, options);
+      res.send(result);
+    })
+
+
+
     
 
 
