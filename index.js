@@ -31,6 +31,7 @@ async function run() {
     const bannerCollection = client.db("DevNextGen").collection("welcomeBanner");
     const joinCompanyCollection = client.db("DevNextGen").collection("joinCompany");
     const teamVideoCollection = client.db("DevNextGen").collection("teamVideo");
+    const workServiceSupportCollection = client.db("DevNextGen").collection("workServiceSupport");
 
     //! welcome banner
     app.get('/banner', async(req, res)=>{
@@ -97,8 +98,24 @@ async function run() {
       res.send(result);
     });
 
+    //! workServiceSupport
+    app.get('/workservicesupport', async(req, res)=>{
+      const result = await workServiceSupportCollection.find().toArray();
+      res.send(result);
+    });
 
-    
+    app.post('/workservicesupport', async(req, res)=>{
+      const work = req.body;
+      const result = await workServiceSupportCollection.insertOne(work);
+      res.send(result);
+    });
+
+    app.delete('/workservicesupport/:id', async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await workServiceSupportCollection.deleteOne(query);
+      res.send(result)
+    })
 
 
     // Send a ping to confirm a successful connection
