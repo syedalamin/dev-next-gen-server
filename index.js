@@ -34,6 +34,7 @@ async function run() {
     const workServiceSupportCollection = client.db("DevNextGen").collection("workServiceSupport");
     const clientReviewCollection = client.db("DevNextGen").collection("clientReview");
     const awardsCollection = client.db("DevNextGen").collection("awards");
+    const someProjectsCollection = client.db("DevNextGen").collection("someProjects");
 
     //! welcome banner
     app.get('/banner', async (req, res) => {
@@ -150,12 +151,31 @@ async function run() {
       res.send(result);
     });
 
-    app.delete('/awards/:id', async (req, res)=>{
+    app.delete('/awards/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const result = await awardsCollection.deleteOne(query);
       res.send(result);
     });
+
+    //! some Projects
+    app.get('/someprojects', async (req, res) => {
+      const result = await someProjectsCollection.find().toArray();
+      res.send(result);
+    });
+
+    app.post('/someprojects', async (req, res) => {
+      const projects = req.body;
+      const result = await someProjectsCollection.insertOne(projects)
+      res.send(result);
+    });
+
+    app.delete('/someprojects/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id)}
+      const result = await someProjectsCollection.deleteOne(query)
+      res.send(result)
+    })
 
 
     // Send a ping to confirm a successful connection
