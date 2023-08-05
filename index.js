@@ -33,17 +33,18 @@ async function run() {
     const teamVideoCollection = client.db("DevNextGen").collection("teamVideo");
     const workServiceSupportCollection = client.db("DevNextGen").collection("workServiceSupport");
     const clientReviewCollection = client.db("DevNextGen").collection("clientReview");
+    const awardsCollection = client.db("DevNextGen").collection("awards");
 
     //! welcome banner
-    app.get('/banner', async(req, res)=>{
+    app.get('/banner', async (req, res) => {
       const result = await bannerCollection.find().toArray();
       res.send(result)
     });
 
-    app.put('/banner/:id', async(req, res)=>{
+    app.put('/banner/:id', async (req, res) => {
       const id = req.params.id;
-      const filter = {_id: new ObjectId(id)};
-      const options = {upsert: true};
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
       const updateBanner = req.body;
       const banners = {
         $set: {
@@ -59,35 +60,35 @@ async function run() {
 
 
     //! join 10 company
-    app.get('/company', async(req, res)=>{
+    app.get('/company', async (req, res) => {
       const result = await joinCompanyCollection.find().toArray();
       res.send(result)
     });
 
-    app.post('/company', async(req, res)=>{
+    app.post('/company', async (req, res) => {
       const company = req.body;
       const result = await joinCompanyCollection.insertOne(company);
       res.send(result)
 
     });
 
-    app.delete('/company/:id', async(req, res)=>{
+    app.delete('/company/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)};
+      const query = { _id: new ObjectId(id) };
       const result = await joinCompanyCollection.deleteOne(query);
       res.send(result)
     });
 
     //! team video
-    app.get('/teamvideo', async(req, res)=>{
+    app.get('/teamvideo', async (req, res) => {
       const result = await teamVideoCollection.find().toArray();
       res.send(result)
     });
 
-    app.put('/teamvideo/:id', async(req, res)=>{
+    app.put('/teamvideo/:id', async (req, res) => {
       const id = req.params.id;
-      const filter = {_id: new ObjectId(id)};
-      const options = {upsert: true};
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
       const updateTeamVideo = req.body;
       const teamVideo = {
         $set: {
@@ -100,40 +101,59 @@ async function run() {
     });
 
     //! workServiceSupport
-    app.get('/workservicesupport', async(req, res)=>{
+    app.get('/workservicesupport', async (req, res) => {
       const result = await workServiceSupportCollection.find().toArray();
       res.send(result);
     });
 
-    app.post('/workservicesupport', async(req, res)=>{
+    app.post('/workservicesupport', async (req, res) => {
       const work = req.body;
       const result = await workServiceSupportCollection.insertOne(work);
       res.send(result);
     });
 
-    app.delete('/workservicesupport/:id', async(req, res)=>{
+    app.delete('/workservicesupport/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const result = await workServiceSupportCollection.deleteOne(query);
       res.send(result)
     });
 
     //! clientReview
-    app.get('/clientreview', async(req, res)=>{
+    app.get('/clientreview', async (req, res) => {
       const result = await clientReviewCollection.find().toArray();
       res.send(result)
     });
 
-    app.post('/clientreview', async(req, res)=>{
+    app.post('/clientreview', async (req, res) => {
       const review = req.body;
       const result = await clientReviewCollection.insertOne(review);
       res.send(result)
     });
 
-    app.delete('/clientreview/:id', async(req, res)=>{
+    app.delete('/clientreview/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await clientReviewCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    //! awards
+    app.get('/awards', async (req, res) => {
+      const result = await awardsCollection.find().toArray();
+      res.send(result);
+    });
+
+    app.post('/awards', async (req, res) => {
+      const award = req.body;
+      const result = await awardsCollection.insertOne(award);
+      res.send(result);
+    });
+
+    app.delete('/awards/:id', async (req, res)=>{
       const id = req.params.id;
       const query = {_id: new ObjectId(id)}
-      const result = await clientReviewCollection.deleteOne(query);
+      const result = await awardsCollection.deleteOne(query);
       res.send(result);
     });
 
@@ -152,10 +172,10 @@ run().catch(console.dir);
 
 
 
-app.get('/', (req, res)=>{
-    res.send('Dev Next Gen');
+app.get('/', (req, res) => {
+  res.send('Dev Next Gen');
 });
 
-app.listen(port, ()=>{
-    console.log(`Dev Next Gen Is Running Port On : ${port}`);
+app.listen(port, () => {
+  console.log(`Dev Next Gen Is Running Port On : ${port}`);
 })
