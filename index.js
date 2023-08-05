@@ -32,6 +32,7 @@ async function run() {
     const joinCompanyCollection = client.db("DevNextGen").collection("joinCompany");
     const teamVideoCollection = client.db("DevNextGen").collection("teamVideo");
     const workServiceSupportCollection = client.db("DevNextGen").collection("workServiceSupport");
+    const clientReviewCollection = client.db("DevNextGen").collection("clientReview");
 
     //! welcome banner
     app.get('/banner', async(req, res)=>{
@@ -115,7 +116,26 @@ async function run() {
       const query = {_id: new ObjectId(id)}
       const result = await workServiceSupportCollection.deleteOne(query);
       res.send(result)
-    })
+    });
+
+    //! clientReview
+    app.get('/clientreview', async(req, res)=>{
+      const result = await clientReviewCollection.find().toArray();
+      res.send(result)
+    });
+
+    app.post('/clientreview', async(req, res)=>{
+      const review = req.body;
+      const result = await clientReviewCollection.insertOne(review);
+      res.send(result)
+    });
+
+    app.delete('/clientreview/:id', async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await clientReviewCollection.deleteOne(query);
+      res.send(result);
+    });
 
 
     // Send a ping to confirm a successful connection
