@@ -36,6 +36,7 @@ async function run() {
     const awardsCollection = client.db("DevNextGen").collection("awards");
     const someProjectsCollection = client.db("DevNextGen").collection("someProjects");
     const aboutBannerCollection = client.db("DevNextGen").collection("aboutBanner");
+    const ourTeamsCollection = client.db("DevNextGen").collection("ourTeams");
 
     //! welcome banner
     app.get('/banner', async (req, res) => {
@@ -197,6 +198,25 @@ async function run() {
         }
       }
       const result = await aboutBannerCollection.updateOne(filter, aboutBanner, options);
+      res.send(result);
+    });
+
+    //! ourTeams
+    app.get('/ourteams', async(req, res)=>{
+      const result = await ourTeamsCollection.find().toArray();
+      res.send(result);
+    });
+
+    app.post('/ourteams', async(req, res)=>{
+      const team = req.body;
+      const result = await ourTeamsCollection.insertOne(team);
+      res.send(result);
+    });
+    
+    app.delete('/ourteams/:id', async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await ourTeamsCollection.deleteOne(query);
       res.send(result);
     });
 
