@@ -35,6 +35,7 @@ async function run() {
     const clientReviewCollection = client.db("DevNextGen").collection("clientReview");
     const awardsCollection = client.db("DevNextGen").collection("awards");
     const someProjectsCollection = client.db("DevNextGen").collection("someProjects");
+    const aboutBannerCollection = client.db("DevNextGen").collection("aboutBanner");
 
     //! welcome banner
     app.get('/banner', async (req, res) => {
@@ -172,10 +173,34 @@ async function run() {
 
     app.delete('/someprojects/:id', async (req, res) => {
       const id = req.params.id;
-      const query = { _id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const result = await someProjectsCollection.deleteOne(query)
       res.send(result)
-    })
+    });
+
+    //! aboutBanner
+    app.get('/aboutbanner', async (req, res) => {
+      const result = await aboutBannerCollection.find().toArray();
+      res.send(result)
+    });
+
+    app.put('/aboutbanner/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateAboutBanner = req.body;
+      const aboutBanner = {
+        $set: {
+          heading: updateAboutBanner.heading,
+          subHeading: updateAboutBanner.subHeading,
+          image: updateAboutBanner.image,
+        }
+      }
+      const result = await aboutBannerCollection.updateOne(filter, aboutBanner, options);
+      res.send(result);
+    });
+
+
 
 
     // Send a ping to confirm a successful connection
