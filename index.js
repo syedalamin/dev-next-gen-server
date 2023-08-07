@@ -38,6 +38,8 @@ async function run() {
     const aboutBannerCollection = client.db("DevNextGen").collection("aboutBanner");
     const ourTeamsCollection = client.db("DevNextGen").collection("ourTeams");
     const ourOfficeCollection = client.db("DevNextGen").collection("ourOffice");
+    const productShowcaseBannerCollection = client.db("DevNextGen").collection("productShowcaseBanner");
+    const productShowcaseCollection = client.db("DevNextGen").collection("productShowcase");
 
     //! welcome banner
     app.get('/banner', async (req, res) => {
@@ -203,44 +205,82 @@ async function run() {
     });
 
     //! ourTeams
-    app.get('/ourteams', async(req, res)=>{
+    app.get('/ourteams', async (req, res) => {
       const result = await ourTeamsCollection.find().toArray();
       res.send(result);
     });
 
-    app.post('/ourteams', async(req, res)=>{
+    app.post('/ourteams', async (req, res) => {
       const team = req.body;
       const result = await ourTeamsCollection.insertOne(team);
       res.send(result);
     });
-    
-    app.delete('/ourteams/:id', async(req,res)=>{
+
+    app.delete('/ourteams/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const result = await ourTeamsCollection.deleteOne(query);
       res.send(result);
     });
 
     //! ourOffice
-    app.get('/ouroffice', async(req, res)=>{
+    app.get('/ouroffice', async (req, res) => {
       const result = await ourOfficeCollection.find().toArray();
       res.send(result);
     });
 
-    app.post('/ouroffice', async(req, res)=>{
+    app.post('/ouroffice', async (req, res) => {
       const office = req.body;
       const result = await ourOfficeCollection.insertOne(office);
       res.send(result);
     });
 
-    app.delete('/ouroffice/:id', async(req, res)=>{
+    app.delete('/ouroffice/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)};
+      const query = { _id: new ObjectId(id) };
       const result = await ourOfficeCollection.deleteOne(query);
       res.send(result);
     });
 
+    //! productShowcaseBanner
+    app.get('/productshowcasebanner', async (req, res) => {
+      const result = await productShowcaseBannerCollection.find().toArray();
+      res.send(result);
+    });
+    app.put('/productshowcasebanner/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateProductBanner = req.body;
+      const aboutBanner = {
+        $set: {
+          subTitle: updateProductBanner.subTitle,
+          title: updateProductBanner.title,
+        }
+      }
+      const result = await productShowcaseBannerCollection.updateOne(filter, aboutBanner, options);
+      res.send(result);
+    });
 
+
+    //! productShowcase
+    app.get('/productshowcase', async (req, res) => {
+      const result = await productShowcaseCollection.find().toArray();
+      res.send(result);
+    });
+
+    app.post('/productshowcase', async(req, res) =>{
+      const showcase = req.body;
+      const result = await productShowcaseCollection.insertOne(showcase);
+      res.send(result);
+    });
+
+    app.delete('/productshowcase/:id', async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await productShowcaseCollection.deleteOne(query);
+      res.send(result);
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
