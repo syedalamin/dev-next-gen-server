@@ -40,6 +40,8 @@ async function run() {
     const ourOfficeCollection = client.db("DevNextGen").collection("ourOffice");
     const productShowcaseBannerCollection = client.db("DevNextGen").collection("productShowcaseBanner");
     const productShowcaseCollection = client.db("DevNextGen").collection("productShowcase");
+    const blogBannerCollection = client.db("DevNextGen").collection("blogBanner");
+    const blogCollection = client.db("DevNextGen").collection("blog");
 
     //! welcome banner
     app.get('/banner', async (req, res) => {
@@ -280,7 +282,56 @@ async function run() {
       const query = {_id: new ObjectId(id)};
       const result = await productShowcaseCollection.deleteOne(query);
       res.send(result);
+    });
+
+    //! blogBanner
+    app.get('/blogbanner', async(req, res)=>{
+      const result = await blogBannerCollection.find().toArray();
+      res.send(result)
+    });
+
+    app.put('/blogbanner/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateBlogBanner = req.body;
+      const blogBanner = {
+        $set: {
+          subTitle: updateBlogBanner.subTitle,
+          title: updateBlogBanner.title,
+        }
+      }
+      const result = await blogBannerCollection.updateOne(filter, blogBanner, options);
+      res.send(result);
+    });
+
+    //! blog
+    app.get('/blog', async(req, res)=>{
+      const result = await blogCollection.find().toArray();
+      res.send(result)
+    });
+    app.post('/blog', async (req, res) => {
+      const blog = req.body;
+      const currentDate = new Date().toISOString().split('T')[0];
+      blog.date = currentDate;
+      const result = await blogCollection.insertOne(blog);
+      res.send(result)
+    });
+
+    app.delete('/blog/:id', async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await blogCollection.deleteOne(query);
+      res.send(result);
     })
+
+
+
+
+
+
+
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
