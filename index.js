@@ -42,6 +42,7 @@ async function run() {
     const productShowcaseCollection = client.db("DevNextGen").collection("productShowcase");
     const blogBannerCollection = client.db("DevNextGen").collection("blogBanner");
     const blogCollection = client.db("DevNextGen").collection("blog");
+    const usersCollection = client.db("DevNextGen").collection("users");
 
     //! welcome banner
     app.get('/banner', async (req, res) => {
@@ -323,7 +324,20 @@ async function run() {
       const query = {_id: new ObjectId(id)};
       const result = await blogCollection.deleteOne(query);
       res.send(result);
+    });
+
+    //! users
+    app.get('/users', async(req, res)=>{
+      const result = await usersCollection.find().toArray();
+      res.send(result);
+    });
+
+    app.post('/users', async(req, res)=>{
+      const user = req.body;
+      const result = await usersCollection.insertOne(user);
+      res.send(result);
     })
+    
 
 
 
